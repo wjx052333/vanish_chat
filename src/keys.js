@@ -20,11 +20,9 @@ export async function createKey(username) {
 }
 
 export async function updateKeyLogin(keyId, uid, ip) {
-  await update(ref(db, `keys/${keyId}`), {
-    uid,
-    lastLoginAt: Date.now(),
-    lastLoginIp: ip,
-  })
+  const updates = { lastLoginAt: Date.now(), lastLoginIp: ip }
+  if (uid !== undefined) updates.uid = uid
+  await update(ref(db, `keys/${keyId}`), updates)
 }
 
 export async function getAllKeys() {
