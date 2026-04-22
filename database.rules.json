@@ -1,6 +1,7 @@
 {
   "rules": {
     "keys": {
+      ".read": "auth != null && auth.token.email == 'abc@cde.com'",
       "$keyId": {
         ".read": "auth != null && (auth.token.email == 'abc@cde.com' || auth.uid == root.child('keys').child($keyId).child('uid').val() || !root.child('keys').child($keyId).child('uid').exists())",
         ".write": "auth != null && auth.token.email == 'abc@cde.com'",
