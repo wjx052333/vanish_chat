@@ -1,5 +1,5 @@
 import { db } from './firebase.js'
-import { ref, push, onChildAdded, remove, get } from 'firebase/database'
+import { ref, push, update, onChildAdded, onChildChanged, remove, get } from 'firebase/database'
 
 export const MESSAGE_TTL = 10000
 
@@ -11,14 +11,23 @@ export function sendMessage(keyId, text, sender) {
   })
 }
 
+// Subscribe to new messages (for user and admin)
 export function subscribeMessages(keyId, onMessage) {
   return onChildAdded(ref(db, `chats/${keyId}/messages`), (snap) => {
     onMessage({ id: snap.key, ...snap.val() })
   })
 }
 
-export function deleteMessage(keyId, msgId) {
-  return remove(ref(db, `chats/${keyId}/messages/${msgId}`))
+// Subscribe to message updates (for admin to see burnedAt changes in real time)
+export function subscribeMessageUpdates(keyId, onUpdate) {
+  return onChildChanged(ref(db, `chats/${keyId}/messages`), (snap) => {
+    onUpdate({ id: snap.key, ...snap.val() })
+  })
+}
+
+// Mark a message as burned (user has read it) instead of deleting
+export function burnMessage(keyId, msgId) {
+  return update(ref(db, `chats/${keyId}/messages/${msgId}`), { burnedAt: Date.now() })
 }
 
 export async function cleanExpiredMessages(keyId) {
@@ -27,7 +36,9 @@ export async function cleanExpiredMessages(keyId) {
   const cutoff = Date.now() - MESSAGE_TTL
   const deletions = []
   snap.forEach((child) => {
-    if (child.val().createdAt < cutoff) {
+    const val = child.val()
+    // Clean up messages that are burned OR expired (older than TTL)
+    if (val.burnedAt || val.createdAt < cutoff) {
       deletions.push(remove(ref(db, `chats/${keyId}/messages/${child.key}`)))
     }
   })

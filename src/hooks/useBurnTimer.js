@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { deleteMessage, MESSAGE_TTL } from '../messages.js'
+import { burnMessage, MESSAGE_TTL } from '../messages.js'
 
 export function useBurnTimer(keyId, message, onBurned) {
   useEffect(() => {
@@ -7,7 +7,7 @@ export function useBurnTimer(keyId, message, onBurned) {
     const elapsed = Date.now() - message.createdAt
     const remaining = Math.max(0, MESSAGE_TTL - elapsed)
     const timer = setTimeout(async () => {
-      await deleteMessage(keyId, message.id)
+      await burnMessage(keyId, message.id)
       onBurned(message.id)
     }, remaining)
     return () => clearTimeout(timer)

@@ -4,27 +4,34 @@ import { GenerateKeyModal } from './GenerateKeyModal.jsx'
 import { MessageBubble } from './MessageBubble.jsx'
 import { MessageInput } from './MessageInput.jsx'
 import { getAllKeys } from '../keys.js'
-import { subscribeMessages, sendMessage, cleanExpiredMessages } from '../messages.js'
-import { useMessageQueue } from '../hooks/useMessageQueue.js'
+import { subscribeMessages, subscribeMessageUpdates, sendMessage, cleanExpiredMessages } from '../messages.js'
 
 function ChatPanel({ keyId }) {
-  const { displayed, enqueue, removeDisplayed } = useMessageQueue()
+  const [messages, setMessages] = useState([])
 
   useEffect(() => {
     cleanExpiredMessages(keyId)
-    const unsub = subscribeMessages(keyId, enqueue)
-    return unsub
+    const unsubAdd = subscribeMessages(keyId, (msg) => {
+      setMessages(prev => {
+        if (prev.some(m => m.id === msg.id)) return prev
+        return [...prev, msg]
+      })
+    })
+    const unsubChange = subscribeMessageUpdates(keyId, (msg) => {
+      setMessages(prev => prev.map(m => m.id === msg.id ? msg : m))
+    })
+    return () => { unsubAdd(); unsubChange() }
   }, [keyId])
 
   return (
     <>
       <div className="messages">
-        {displayed.map(msg => (
+        {messages.map(msg => (
           <MessageBubble
             key={msg.id}
             keyId={keyId}
             message={msg}
-            onBurned={removeDisplayed}
+            adminView
           />
         ))}
       </div>

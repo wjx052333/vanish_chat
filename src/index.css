@@ -162,6 +162,8 @@ body {
   align-self: flex-end;
   border-bottom-right-radius: 2px;
 }
+.bubble--burned { opacity: 0.5; }
+.bubble__status { font-size: 0.7rem; margin-top: 0.3rem; opacity: 0.7; }
 .bubble__text { font-size: 0.95rem; line-height: 1.4; word-break: break-word; }
 .bubble__burn-track {
   height: 2px;
