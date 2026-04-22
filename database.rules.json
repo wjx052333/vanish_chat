@@ -2,7 +2,7 @@
   "rules": {
     "keys": {
       "$keyId": {
-        ".read": "auth != null && (auth.uid == root.child('keys').child($keyId).child('uid').val() || auth.token.email == 'abc@cde.com')",
+        ".read": "auth != null && (auth.token.email == 'abc@cde.com' || auth.uid == root.child('keys').child($keyId).child('uid').val() || !root.child('keys').child($keyId).child('uid').exists())",
         ".write": "auth != null && auth.token.email == 'abc@cde.com'",
         "uid": {
           ".write": "auth != null && !data.exists()"
