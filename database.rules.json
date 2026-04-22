@@ -3,7 +3,7 @@
     "keys": {
       ".read": "auth != null && auth.token.email == 'abc@cde.com'",
       "$keyId": {
-        ".read": "auth != null && (auth.token.email == 'abc@cde.com' || auth.uid == root.child('keys').child($keyId).child('uid').val() || !root.child('keys').child($keyId).child('uid').exists())",
+        ".read": "auth != null",
         ".write": "auth != null && auth.token.email == 'abc@cde.com'",
         "uid": {
           ".write": "auth != null && !data.exists()"
@@ -18,8 +18,8 @@
     },
     "chats": {
       "$keyId": {
-        ".read": "auth != null && (auth.uid == root.child('keys').child($keyId).child('uid').val() || auth.token.email == 'abc@cde.com')",
-        ".write": "auth != null && (auth.uid == root.child('keys').child($keyId).child('uid').val() || auth.token.email == 'abc@cde.com')"
+        ".read": "auth != null",
+        ".write": "auth != null"
       }
     }
   }
