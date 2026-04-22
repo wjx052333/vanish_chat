@@ -5,12 +5,13 @@ vi.mock('firebase/database', () => ({
   ref: vi.fn((db, path) => ({ path })),
   get: vi.fn(),
   set: vi.fn(),
+  update: vi.fn(),
 }))
 
 vi.mock('../firebase.js', () => ({ db: {} }))
 
 import { getKey, createKey, updateKeyLogin, getAllKeys } from '../keys.js'
-import { get, set } from 'firebase/database'
+import { get, set, update } from 'firebase/database'
 
 beforeEach(() => vi.clearAllMocks())
 
@@ -34,6 +35,18 @@ describe('createKey', () => {
     expect(set).toHaveBeenCalledOnce()
     expect(typeof keyId).toBe('string')
     expect(keyId.length).toBe(32)
+  })
+})
+
+describe('updateKeyLogin', () => {
+  it('updates uid, lastLoginAt, and lastLoginIp atomically', async () => {
+    update.mockResolvedValue()
+    await updateKeyLogin('key1', 'uid123', '1.2.3.4')
+    expect(update).toHaveBeenCalledOnce()
+    const [, payload] = update.mock.calls[0]
+    expect(payload.uid).toBe('uid123')
+    expect(payload.lastLoginIp).toBe('1.2.3.4')
+    expect(typeof payload.lastLoginAt).toBe('number')
   })
 })
 

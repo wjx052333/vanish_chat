@@ -1,6 +1,6 @@
 // src/keys.js
 import { db } from './firebase.js'
-import { ref, get, set } from 'firebase/database'
+import { ref, get, set, update } from 'firebase/database'
 
 export async function getKey(keyId) {
   const snap = await get(ref(db, `keys/${keyId}`))
@@ -20,9 +20,11 @@ export async function createKey(username) {
 }
 
 export async function updateKeyLogin(keyId, uid, ip) {
-  await set(ref(db, `keys/${keyId}/uid`), uid)
-  await set(ref(db, `keys/${keyId}/lastLoginAt`), Date.now())
-  await set(ref(db, `keys/${keyId}/lastLoginIp`), ip)
+  await update(ref(db, `keys/${keyId}`), {
+    uid,
+    lastLoginAt: Date.now(),
+    lastLoginIp: ip,
+  })
 }
 
 export async function getAllKeys() {
