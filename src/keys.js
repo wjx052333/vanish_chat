@@ -1,6 +1,6 @@
 // src/keys.js
 import { db } from './firebase.js'
-import { ref, get, set, update } from 'firebase/database'
+import { ref, get, set, update, remove } from 'firebase/database'
 
 export async function getKey(keyId) {
   const snap = await get(ref(db, `keys/${keyId}`))
@@ -23,6 +23,13 @@ export async function updateKeyLogin(keyId, uid, ip) {
   const updates = { lastLoginAt: Date.now(), lastLoginIp: ip }
   if (uid !== undefined) updates.uid = uid
   await update(ref(db, `keys/${keyId}`), updates)
+}
+
+export async function deleteKey(keyId) {
+  await Promise.all([
+    remove(ref(db, `keys/${keyId}`)),
+    remove(ref(db, `chats/${keyId}`)),
+  ])
 }
 
 export async function getAllKeys() {

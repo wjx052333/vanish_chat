@@ -3,7 +3,7 @@ import { UserList } from './UserList.jsx'
 import { GenerateKeyModal } from './GenerateKeyModal.jsx'
 import { MessageBubble } from './MessageBubble.jsx'
 import { MessageInput } from './MessageInput.jsx'
-import { getAllKeys } from '../keys.js'
+import { getAllKeys, deleteKey } from '../keys.js'
 import { subscribeMessages, subscribeMessageUpdates, sendMessage, cleanExpiredMessages } from '../messages.js'
 
 function ChatPanel({ keyId }) {
@@ -49,9 +49,18 @@ export function AdminView() {
     getAllKeys().then(setUsers)
   }, [])
 
-  function handleKeyGenerated() {
-    setShowModal(false)
+  function refreshUsers() {
     getAllKeys().then(setUsers)
+  }
+
+  function handleModalClose() {
+    setShowModal(false)
+  }
+
+  async function handleDelete(keyId) {
+    await deleteKey(keyId)
+    if (selectedKeyId === keyId) setSelectedKeyId(null)
+    setUsers(prev => prev.filter(u => u.id !== keyId))
   }
 
   return (
@@ -64,6 +73,7 @@ export function AdminView() {
           users={users}
           selectedKeyId={selectedKeyId}
           onSelect={setSelectedKeyId}
+          onDelete={handleDelete}
         />
       </div>
       <div className="admin-view__chat">
@@ -73,7 +83,7 @@ export function AdminView() {
           <div className="admin-view__empty">← 选择一个用户开始聊天</div>
         )}
       </div>
-      {showModal && <GenerateKeyModal onClose={handleKeyGenerated} />}
+      {showModal && <GenerateKeyModal onClose={handleModalClose} onKeyCreated={refreshUsers} />}
     </div>
   )
 }

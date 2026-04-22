@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { createKey } from '../keys.js'
 
-export function GenerateKeyModal({ onClose }) {
+export function GenerateKeyModal({ onClose, onKeyCreated }) {
   const [username, setUsername] = useState('')
   const [generatedKey, setGeneratedKey] = useState(null)
   const [copied, setCopied] = useState(false)
@@ -14,6 +14,7 @@ export function GenerateKeyModal({ onClose }) {
     const key = await createKey(username.trim())
     setGeneratedKey(key)
     setLoading(false)
+    onKeyCreated?.()
   }
 
   async function handleCopy() {
