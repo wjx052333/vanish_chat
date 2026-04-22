@@ -2,8 +2,8 @@
   "rules": {
     "keys": {
       "$keyId": {
-        ".read": "auth != null && (auth.uid == root.child('keys').child($keyId).child('uid').val() || auth.token.email == 'ADMIN_EMAIL_HERE')",
-        ".write": "auth != null && auth.token.email == 'ADMIN_EMAIL_HERE'",
+        ".read": "auth != null && (auth.uid == root.child('keys').child($keyId).child('uid').val() || auth.token.email == 'abc@cde.com')",
+        ".write": "auth != null && auth.token.email == 'abc@cde.com'",
         "uid": {
           ".write": "auth != null && !data.exists()"
         },
@@ -17,8 +17,8 @@
     },
     "chats": {
       "$keyId": {
-        ".read": "auth != null && (auth.uid == root.child('keys').child($keyId).child('uid').val() || auth.token.email == 'ADMIN_EMAIL_HERE')",
-        ".write": "auth != null && (auth.uid == root.child('keys').child($keyId).child('uid').val() || auth.token.email == 'ADMIN_EMAIL_HERE')"
+        ".read": "auth != null && (auth.uid == root.child('keys').child($keyId).child('uid').val() || auth.token.email == 'abc@cde.com')",
+        ".write": "auth != null && (auth.uid == root.child('keys').child($keyId).child('uid').val() || auth.token.email == 'abc@cde.com')"
       }
     }
   }
