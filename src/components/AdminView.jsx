@@ -7,26 +7,40 @@ import { getAllKeys } from '../keys.js'
 import { subscribeMessages, sendMessage, cleanExpiredMessages } from '../messages.js'
 import { useMessageQueue } from '../hooks/useMessageQueue.js'
 
+function ChatPanel({ keyId }) {
+  const { displayed, enqueue, removeDisplayed } = useMessageQueue()
+
+  useEffect(() => {
+    cleanExpiredMessages(keyId)
+    const unsub = subscribeMessages(keyId, enqueue)
+    return unsub
+  }, [keyId])
+
+  return (
+    <>
+      <div className="messages">
+        {displayed.map(msg => (
+          <MessageBubble
+            key={msg.id}
+            keyId={keyId}
+            message={msg}
+            onBurned={removeDisplayed}
+          />
+        ))}
+      </div>
+      <MessageInput onSend={text => sendMessage(keyId, text, 'admin')} />
+    </>
+  )
+}
+
 export function AdminView() {
   const [users, setUsers] = useState([])
   const [selectedKeyId, setSelectedKeyId] = useState(null)
   const [showModal, setShowModal] = useState(false)
-  const { displayed, enqueue, removeDisplayed } = useMessageQueue()
 
   useEffect(() => {
     getAllKeys().then(setUsers)
   }, [])
-
-  useEffect(() => {
-    if (!selectedKeyId) return
-    cleanExpiredMessages(selectedKeyId)
-    const unsub = subscribeMessages(selectedKeyId, enqueue)
-    return unsub
-  }, [selectedKeyId])
-
-  function handleSend(text) {
-    sendMessage(selectedKeyId, text, 'admin')
-  }
 
   function handleKeyGenerated() {
     setShowModal(false)
@@ -47,19 +61,7 @@ export function AdminView() {
       </div>
       <div className="admin-view__chat">
         {selectedKeyId ? (
-          <>
-            <div className="messages">
-              {displayed.map(msg => (
-                <MessageBubble
-                  key={msg.id}
-                  keyId={selectedKeyId}
-                  message={msg}
-                  onBurned={removeDisplayed}
-                />
-              ))}
-            </div>
-            <MessageInput onSend={handleSend} />
-          </>
+          <ChatPanel key={selectedKeyId} keyId={selectedKeyId} />
         ) : (
           <div className="admin-view__empty">← 选择一个用户开始聊天</div>
         )}

@@ -3,7 +3,16 @@
     "keys": {
       "$keyId": {
         ".read": "auth != null && (auth.uid == root.child('keys').child($keyId).child('uid').val() || auth.token.email == 'ADMIN_EMAIL_HERE')",
-        ".write": "auth != null && auth.token.email == 'ADMIN_EMAIL_HERE'"
+        ".write": "auth != null && auth.token.email == 'ADMIN_EMAIL_HERE'",
+        "uid": {
+          ".write": "auth != null && !data.exists()"
+        },
+        "lastLoginAt": {
+          ".write": "auth != null && (!root.child('keys').child($keyId).child('uid').exists() || root.child('keys').child($keyId).child('uid').val() == auth.uid)"
+        },
+        "lastLoginIp": {
+          ".write": "auth != null && (!root.child('keys').child($keyId).child('uid').exists() || root.child('keys').child($keyId).child('uid').val() == auth.uid)"
+        }
       }
     },
     "chats": {

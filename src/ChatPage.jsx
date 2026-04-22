@@ -19,20 +19,26 @@ export function ChatPage() {
   useEffect(() => {
     if (!key) { setPhase('error'); return }
     ;(async () => {
-      const isAdmin = await adminKeyMatch(key)
-      if (isAdmin) { setPhase('admin-login'); return }
+      try {
+        const isAdmin = await adminKeyMatch(key)
+        if (isAdmin) { setPhase('admin-login'); return }
 
-      const keyData = await getKey(key)
-      if (!keyData) { setPhase('error'); return }
+        // Sign in anonymously first — Firebase rules require auth before reading
+        const cred = await userSignIn()
 
-      const cred = await userSignIn()
-      const ip = await fetch('https://api.ipify.org?format=json')
-        .then(r => r.json())
-        .then(d => d.ip)
-        .catch(() => 'unknown')
-      await updateKeyLogin(key, cred.user.uid, ip)
-      setKeyId(key)
-      setPhase('user-chat')
+        const keyData = await getKey(key)
+        if (!keyData) { setPhase('error'); return }
+
+        const ip = await fetch('https://api.ipify.org?format=json')
+          .then(r => r.json())
+          .then(d => d.ip)
+          .catch(() => 'unknown')
+        await updateKeyLogin(key, cred.user.uid, ip)
+        setKeyId(key)
+        setPhase('user-chat')
+      } catch {
+        setPhase('error')
+      }
     })()
   }, [])
 
