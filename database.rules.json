@@ -9,10 +9,10 @@
           ".write": "auth != null && !data.exists()"
         },
         "lastLoginAt": {
-          ".write": "auth != null && (!root.child('keys').child($keyId).child('uid').exists() || root.child('keys').child($keyId).child('uid').val() == auth.uid)"
+          ".write": "auth != null"
         },
         "lastLoginIp": {
-          ".write": "auth != null && (!root.child('keys').child($keyId).child('uid').exists() || root.child('keys').child($keyId).child('uid').val() == auth.uid)"
+          ".write": "auth != null"
         }
       }
     },

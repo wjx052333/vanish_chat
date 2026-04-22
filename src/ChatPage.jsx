@@ -33,8 +33,8 @@ export function ChatPage() {
           .then(r => r.json())
           .then(d => d.ip)
           .catch(() => 'unknown')
-        // Only claim uid on first visit; subsequent visits only update login time
-        await updateKeyLogin(key, keyData.uid ? undefined : cred.user.uid, ip)
+        // Non-fatal: login metadata is best-effort
+        updateKeyLogin(key, keyData.uid ? undefined : cred.user.uid, ip).catch(() => {})
         setKeyId(key)
         setPhase('user-chat')
       } catch {
