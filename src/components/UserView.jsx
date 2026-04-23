@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { MessageBubble } from './MessageBubble.jsx'
 import { MessageInput } from './MessageInput.jsx'
-import { subscribeMessages, sendMessage, cleanExpiredMessages } from '../messages.js'
+import { subscribeMessages, sendMessage } from '../messages.js'
 import { useMessageQueue } from '../hooks/useMessageQueue.js'
 import { useSession } from '../hooks/useSession.js'
 
@@ -13,8 +13,9 @@ export function UserView({ keyId }) {
   useSession(keyId, () => setKicked(true))
 
   useEffect(() => {
-    cleanExpiredMessages(keyId)
-    const unsub = subscribeMessages(keyId, enqueue)
+    const unsub = subscribeMessages(keyId, (msg) => {
+      if (!msg.burnedAt) enqueue(msg)
+    })
     return unsub
   }, [keyId])
 

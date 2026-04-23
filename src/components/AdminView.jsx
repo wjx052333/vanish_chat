@@ -4,13 +4,12 @@ import { GenerateKeyModal } from './GenerateKeyModal.jsx'
 import { MessageBubble } from './MessageBubble.jsx'
 import { MessageInput } from './MessageInput.jsx'
 import { getAllKeys, deleteKey } from '../keys.js'
-import { subscribeMessages, subscribeMessageUpdates, sendMessage, cleanExpiredMessages } from '../messages.js'
+import { subscribeMessages, subscribeMessageUpdates, sendMessage } from '../messages.js'
 
 function ChatPanel({ keyId }) {
   const [messages, setMessages] = useState([])
 
   useEffect(() => {
-    cleanExpiredMessages(keyId)
     const unsubAdd = subscribeMessages(keyId, (msg) => {
       setMessages(prev => {
         if (prev.some(m => m.id === msg.id)) return prev
