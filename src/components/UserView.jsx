@@ -39,7 +39,6 @@ export function UserView({ keyId }) {
             keyId={keyId}
             message={msg}
             onBurned={removeDisplayed}
-            skipBurn={msg.sender === 'user'}
           />
         ))}
         <div ref={bottomRef} />

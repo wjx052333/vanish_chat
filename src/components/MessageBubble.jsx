@@ -1,9 +1,8 @@
 import { useBurnTimer } from '../hooks/useBurnTimer.js'
 import { MESSAGE_TTL } from '../messages.js'
 
-export function MessageBubble({ keyId, message, onBurned, adminView = false, skipBurn = false }) {
-  const noTimer = adminView || skipBurn
-  useBurnTimer(noTimer ? null : keyId, noTimer ? null : message, onBurned ?? (() => {}))
+export function MessageBubble({ keyId, message, onBurned, adminView = false }) {
+  useBurnTimer(adminView ? null : keyId, adminView ? null : message, onBurned ?? (() => {}))
 
   const elapsed = Date.now() - message.createdAt
   const remaining = Math.max(0, MESSAGE_TTL - elapsed)
