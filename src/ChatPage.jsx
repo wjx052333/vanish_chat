@@ -6,7 +6,16 @@ import { UserView } from './components/UserView.jsx'
 
 export function ChatPage() {
   const params = new URLSearchParams(window.location.search)
-  const key = params.get('key')
+  const urlKey = params.get('key')
+
+  // Key can come from URL (first visit) or sessionStorage (after page clean-up / refresh)
+  const key = urlKey || sessionStorage.getItem('chat_key')
+
+  // If key arrived via URL, hide it from address bar and persist for this session
+  if (urlKey) {
+    sessionStorage.setItem('chat_key', urlKey)
+    history.replaceState(null, '', '/chat')
+  }
 
   // 'loading' | 'admin-login' | 'admin-chat' | 'user-chat' | 'error'
   const [phase, setPhase] = useState('loading')
