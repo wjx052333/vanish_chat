@@ -4,7 +4,7 @@ import { GenerateKeyModal } from './GenerateKeyModal.jsx'
 import { MessageBubble } from './MessageBubble.jsx'
 import { MessageInput } from './MessageInput.jsx'
 import { getAllKeys, deleteKey } from '../keys.js'
-import { subscribeMessages, subscribeMessageUpdates, sendMessage } from '../messages.js'
+import { subscribeMessages, subscribeMessageUpdates, sendMessage, clearMessages } from '../messages.js'
 
 function ChatPanel({ keyId }) {
   const [messages, setMessages] = useState([])
@@ -22,8 +22,16 @@ function ChatPanel({ keyId }) {
     return () => { unsubAdd(); unsubChange() }
   }, [keyId])
 
+  async function handleClear() {
+    await clearMessages(keyId)
+    setMessages([])
+  }
+
   return (
     <>
+      <div className="chat-panel__toolbar">
+        <button className="btn btn--ghost btn--sm" onClick={handleClear}>清空记录</button>
+      </div>
       <div className="messages">
         {messages.map(msg => (
           <MessageBubble

@@ -112,6 +112,13 @@ body {
   justify-content: center;
   color: var(--text-muted);
 }
+.chat-panel__toolbar {
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+}
+.btn--sm { font-size: 0.75rem; padding: 0.25rem 0.6rem; }
 
 /* User list */
 .user-list__empty { color: var(--text-muted); font-size: 0.85rem; padding: 0.5rem; }

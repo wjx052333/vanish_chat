@@ -30,6 +30,10 @@ export function burnMessage(keyId, msgId) {
   return update(ref(db, `chats/${keyId}/messages/${msgId}`), { burnedAt: Date.now() })
 }
 
+export function clearMessages(keyId) {
+  return remove(ref(db, `chats/${keyId}/messages`))
+}
+
 export async function cleanExpiredMessages(keyId) {
   const snap = await get(ref(db, `chats/${keyId}/messages`))
   if (!snap.exists()) return
