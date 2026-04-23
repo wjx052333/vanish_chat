@@ -4,8 +4,6 @@ import { MESSAGE_TTL } from '../messages.js'
 export function MessageBubble({ keyId, message, onBurned, adminView = false }) {
   useBurnTimer(adminView ? null : keyId, adminView ? null : message, onBurned ?? (() => {}))
 
-  const elapsed = Date.now() - message.createdAt
-  const remaining = Math.max(0, MESSAGE_TTL - elapsed)
   const isAdminSender = message.sender === 'admin'
   const burned = Boolean(message.burnedAt)
 
@@ -18,7 +16,7 @@ export function MessageBubble({ keyId, message, onBurned, adminView = false }) {
         <div className="bubble__burn-track">
           <div
             className="bubble__burn-bar"
-            style={{ animationDuration: `${remaining}ms` }}
+            style={{ animationDuration: `${MESSAGE_TTL}ms` }}
           />
         </div>
       )}
