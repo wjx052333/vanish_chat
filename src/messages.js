@@ -33,12 +33,9 @@ export function burnMessage(keyId, msgId) {
 export async function cleanExpiredMessages(keyId) {
   const snap = await get(ref(db, `chats/${keyId}/messages`))
   if (!snap.exists()) return
-  const cutoff = Date.now() - MESSAGE_TTL
   const deletions = []
   snap.forEach((child) => {
-    const val = child.val()
-    // Clean up messages that are burned OR expired (older than TTL)
-    if (val.burnedAt || val.createdAt < cutoff) {
+    if (child.val().burnedAt) {
       deletions.push(remove(ref(db, `chats/${keyId}/messages/${child.key}`)))
     }
   })
