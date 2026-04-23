@@ -10,9 +10,12 @@ function ChatPanel({ keyId }) {
   const [messages, setMessages] = useState([])
 
   useEffect(() => {
+    const audio = new Audio('/message.mp3')
     const unsubAdd = subscribeMessages(keyId, (msg) => {
       setMessages(prev => {
         if (prev.some(m => m.id === msg.id)) return prev
+        audio.currentTime = 0
+        audio.play().catch(() => {})
         return [...prev, msg]
       })
     })
